@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="world"></div>
+
+    <div id="menu" class="hidden">
+        <div class="panel">
+            <div class="header">
+                <div class="round-btn ghost"></div>
+                <div class="titles">
+                    <div class="title">Overlays</div>
+                    <div class="subtitle">Posters &amp; Projections</div>
+                </div>
+                <div class="round-btn" id="closeBtn" title="Close">&#10005;</div>
+            </div>
+
+            <div class="divider"><span>&#10022;</span></div>
+
+            <div class="form">
+                <label>Media link</label>
+                <input type="text" id="url" placeholder="https://i.imgur.com/example.png" spellcheck="false">
+                <div class="row2">
+                    <div>
+                        <label>Type</label>
+                        <select id="mediaType">
+                            <option value="auto">Auto detect</option>
+                            <option value="image">Image / GIF</option>
+                            <option value="video">Video (mp4 / webm)</option>
+                            <option value="youtube">YouTube</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Detected</label>
+                        <div class="pill" id="detected">&mdash;</div>
+                    </div>
+                </div>
+                <div class="slider"><label>Width <b id="wVal"></b></label><input type="range" id="width" step="0.05"></div>
+                <div class="slider"><label>Height <b id="hVal"></b></label><input type="range" id="height" step="0.05"></div>
+                <div class="slider"><label>Opacity <b id="oVal"></b></label><input type="range" id="opacity" min="0.1" max="1" step="0.05" value="1"></div>
+                <div class="slider" id="volRow"><label>Volume <b id="vVal"></b></label><input type="range" id="volume" min="0" max="1" step="0.05" value="0.5"></div>
+                <div class="hint" id="info"></div>
+                <div class="actions">
+                    <button class="wood-btn" id="fitBtn">Fit to media</button>
+                    <button class="wood-btn" id="placeBtn">Place in world</button>
+                </div>
+            </div>
+
+            <div class="divider"><span>&#10022;</span></div>
+            <div class="list-title">Nearby &amp; yours</div>
+            <div id="list"></div>
+        </div>
+    </div>
+
+
+    <!-- aim stage: key hints + live range -->
+    <div id="placeHud" class="hidden">
+        <div class="hud-bar">
+            <div class="hud-keys">
+                <div class="k"><span class="cap">LMB</span><span class="cap">ENTER</span> Lock &amp; adjust</div>
+                <div class="k"><span class="cap">SCROLL</span> Rotate</div>
+                <div class="k"><span class="cap">SHIFT</span>+<span class="cap">SCROLL</span> Height</div>
+                <div class="k"><span class="cap">RMB</span><span class="cap">BACK</span> Cancel</div>
+            </div>
+            <div class="hud-status">
+                <div class="hud-row"><span>Range</span><b id="hudDist">0.0 m</b></div>
+                <div class="track"><div class="fill stat-good" id="hudFill"></div></div>
+                <div class="hud-meta" id="hudMeta"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- adjust stage: fine tuning with live preview -->
+    <div id="adjust" class="hidden">
+        <div class="panel adjust-panel">
+            <div class="header">
+                <div class="round-btn" id="adjReaim" title="Re-aim">&#8634;</div>
+                <div class="titles">
+                    <div class="title">Adjust</div>
+                    <div class="subtitle">Live placement</div>
+                </div>
+                <div class="round-btn" id="adjCancel" title="Cancel">&#10005;</div>
+            </div>
+            <div class="divider"><span>&#10022;</span></div>
+
+            <div class="sec-label">Move <span class="steps" id="steps">
+                <button data-step="0.01">1cm</button><button data-step="0.05" class="on">5cm</button><button data-step="0.25">25cm</button><button data-step="1">1m</button>
+            </span></div>
+            <div class="move-grid">
+                <div></div><button class="nudge" data-move="up" title="Up (W / &#8593;)">&#9650;</button><div></div>
+                <button class="nudge" data-move="left" title="Left (A / &#8592;)">&#9664;</button>
+                <div class="pad-center" id="padCenter">&#10022;</div>
+                <button class="nudge" data-move="right" title="Right (D / &#8594;)">&#9654;</button>
+                <div></div><button class="nudge" data-move="down" title="Down (S / &#8595;)">&#9660;</button><div></div>
+            </div>
+            <div class="depth-row">
+                <button class="wood-btn nudge" data-move="back" title="Towards wall (F)">&#8676; Push in</button>
+                <button class="wood-btn nudge" data-move="fwd" title="Away from wall (R)">Pull out &#8677;</button>
+            </div>
+
+            <div class="sec-label">Rotation <b id="rotVal"></b></div>
+            <div class="rot-row">
+                <button class="round-btn sm nudge" data-rot="-1" title="Q">&#8634;</button>
+                <input type="range" id="rot" min="0" max="359.5" step="0.5">
+                <button class="round-btn sm nudge" data-rot="1" title="E">&#8635;</button>
+            </div>
+
+            <div class="sec-label">Size <label class="lock"><input type="checkbox" id="lockAspect" checked> Lock ratio</label></div>
+            <div class="slider"><label>Width <b id="adjWVal"></b></label><input type="range" id="adjW" step="0.01"></div>
+            <div class="slider"><label>Height <b id="adjHVal"></b></label><input type="range" id="adjH" step="0.01"></div>
+            <div class="slider"><label>Opacity <b id="adjOVal"></b></label><input type="range" id="adjO" min="0.1" max="1" step="0.05"></div>
+            <div class="slider" id="adjVolRow"><label>Volume <b id="adjVVal"></b></label><input type="range" id="adjV" min="0" max="1" step="0.05"></div>
+
+            <div class="divider"><span>&#10022;</span></div>
+            <div class="hud-row"><span>Distance from you</span><b id="adjDist">0.0 m</b></div>
+            <div class="track"><div class="fill stat-good" id="adjFill"></div></div>
+            <div class="hint" id="adjHint">Hold right mouse to look around &bull; WASD / arrows move &bull; Q/E rotate &bull; Shift = fine</div>
+
+            <div class="actions">
+                <button class="wood-btn muted" id="adjReset">Reset</button>
+                <button class="wood-btn" id="adjConfirm">Place overlay</button>
+            </div>
+        </div>
+    </div>
+    <div id="lookTip" class="hidden">Free look &bull; release right mouse to return</div>
+
+    <script src="script.js"></script>
+</body>
+</html>

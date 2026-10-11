@@ -1,0 +1,17 @@
+{
+    "cmd_help": "Open the overlay manager",
+    "no_job": "You are not allowed to place overlays",
+    "bad_url": "That link is not allowed (https only, approved hosts)",
+    "bad_type": "That media type is disabled",
+    "limit": "You have reached your overlay limit",
+    "cooldown": "Please wait before placing another overlay",
+    "too_far": "Too far away to place it there",
+    "no_item": "You need the required item",
+    "no_money": "You cannot afford that",
+    "placed": "Overlay placed",
+    "removed": "Overlay removed",
+    "not_owner": "You do not own that overlay",
+    "not_found": "Overlay not found",
+    "place_help": "[ENTER/LMB] Place  [BACKSPACE/RMB] Cancel  [SCROLL] Rotate  [SHIFT+SCROLL] Height",
+    "cancelled": "Placement cancelled"
+}
